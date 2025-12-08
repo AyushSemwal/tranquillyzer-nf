@@ -1,15 +1,15 @@
 process READ_LENGTH_DIST_QC {
 
-    tag "${run_id}"
+    tag "${sample_id}"
     label 'cpu'
 
     container params.container_trq
 
     input:
-    tuple val(run_id), path(work_dir)
+    tuple val(sample_id), path(work_dir)
 
     output:
-    tuple val(run_id), path(work_dir)
+    tuple val(sample_id), path(work_dir)
 
     script:
     """
@@ -17,5 +17,6 @@ process READ_LENGTH_DIST_QC {
 
     tranquillyzer readlengthdist \\
         ${work_dir}
+        > ${work_dir}/read_length_dist_qc.log 2>&1
     """
 }
