@@ -12,7 +12,7 @@ process ALIGN {
 
     output:
     // Emit BAM path as well as work_dir for downstream processes
-    tuple val(sample_id), path(work_dir), path("${work_dir}/aligned_files/${sample_id}.bam")
+    tuple val(sample_id), path(work_dir), path("${work_dir}/aligned_files/demuxed_aligned.bam")
 
     script:
     """
@@ -21,7 +21,7 @@ process ALIGN {
     tranquillyzer align \\
         ${work_dir} \\
         ${reference} \\
-        --output-prefix ${work_dir}/aligned_files/${sample_id} \\
+        ${work_dir} \\
         --threads ${task.cpus} \\
       > ${work_dir}/align.log 2>&1
     """

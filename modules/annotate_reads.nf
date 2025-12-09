@@ -8,7 +8,6 @@ process ANNOTATE_READS {
 
     input:
     tuple val(sample_id), path(work_dir), path(metadata)
-    path   seq_orders
     val    model_name
     val    model_type
     val    chunk_size
@@ -21,6 +20,10 @@ process ANNOTATE_READS {
     script:
     def output_fmt = params.output_fastq ? 'fastq' : 'fasta'
 
+    def seq_order_opt  = (params.seq_order_file && params.seq_order_file.trim()) \
+                         ? "--seq-order-file ${params.seq_order_file}" \
+                         : ""
+
     """
     mkdir -p ${work_dir}/annotate
 
@@ -31,7 +34,7 @@ process ANNOTATE_READS {
         --output-fmt ${output_fmt} \\
         --gpu-mem ${gpu_mem} \\
         --model-type ${model_type} \\
-        --seq-order-file ${seq_orders} \\
+        ${seq_order_opt} \\
         --chunk-size ${chunk_size} \\
         --bc-lv-threshold ${bc_lv_threshold} \\
         --threads ${task.cpus} \\

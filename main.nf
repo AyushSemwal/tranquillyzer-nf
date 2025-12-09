@@ -36,7 +36,7 @@ include { DEDUP               } from './modules/dedup.nf'
 */
 
 run_ch = Channel
-  .fromPath('samplesheet.tsv')
+  .fromPath(params.sample_sheet)
   .splitCsv(header: true, sep: '\t')
   .map { row ->
       tuple(
@@ -64,13 +64,11 @@ workflow {
     // 3) Annotate reads (GPU)
     annotated_ch = ANNOTATE_READS(
         preprocessed_ch,
-        file(params.seq_order_file),
         params.model_name,
         params.model_type,
         params.chunk_size,
         params.bc_lv_threshold,
-        params.gpu_mem,
-        params.output_bquals
+        params.gpu_mem
     )
 
     // 4) Align

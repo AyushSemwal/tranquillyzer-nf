@@ -1,0 +1,33 @@
+# Ignore everything
+*
+
+# But NOT these directories (keep them tracked)
+!tests/10x3p/data/
+!tests/10x3p/barcodes.tsv
+!tests/references/
+
+# And NOT these specific files
+!main.nf
+!nextflow.config
+!README.md
+!samplesheet.tsv
+!.gitignore
+
+# Inside conf folder, keep all config files
+conf/*
+!conf/params.config
+
+# Inside modules folder, ignore everything except the NF module files
+modules/*
+!modules/*.nf
+
+# Ignore work, output, and temporary directories everywhere
+*.log
+*.html
+*.txt
+*.bam
+*.bai
+
+# Ignore OS/editor junk
+.DS_Store
+*.swp
