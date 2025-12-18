@@ -6,34 +6,18 @@
 !tests/10x3p/barcodes.tsv
 !tests/references/
 
-# And NOT these specific files
+# Unignore these directories + everything inside them
+!workflows/
+!workflows/**
+!subworkflows/
+!subworkflows/**
+!modules/
+!modules/**
+!conf/
+!conf/**
+
+# Unignore core files
 !main.nf
 !nextflow.config
 !README.md
-!samplesheet.tsv
 !.gitignore
-
-# Inside conf folder, keep all config files
-conf/*
-!conf/params.config
-
-# Inside modules folder, ignore everything except the NF module files
-modules/*
-!modules/*.nf
-
-# Inside workflows folder, ignore everything except the NF module files
-!workflows/*.nf
-
-# Inside subworkflows folder, ignore everything except the NF module files
-!subworkflows/*.nf
-
-# Ignore work, output, and temporary directories everywhere
-*.log
-*.html
-*.txt
-*.bam
-*.bai
-
-# Ignore OS/editor junk
-.DS_Store
-*.swp
