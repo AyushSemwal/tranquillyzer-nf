@@ -5,8 +5,9 @@
 !tests/
 tests/*
 !tests/samplesheet.txt
-!tests/10x3p/
-!tests/10x3p/**
+!tests/10x3p/data/
+!tests/10x3p/data/**
+!tests/10x3p/barcodes.tsv
 !tests/references/
 !tests/references/**
 
