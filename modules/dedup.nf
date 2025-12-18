@@ -14,7 +14,6 @@ process DEDUP {
 
     script:
     """
-    mkdir -p ${work_dir}/aligned_files
     # Adapt to your actual Tranquillyzer CLI as needed
     tranquillyzer dedup \\
         ${work_dir} \\

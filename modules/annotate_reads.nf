@@ -25,8 +25,6 @@ process ANNOTATE_READS {
                          : ""
 
     """
-    mkdir -p ${work_dir}/annotate
-
     tranquillyzer annotate-reads \\
         ${work_dir} \\
         ${metadata} \\

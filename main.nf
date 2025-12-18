@@ -1,87 +1,48 @@
 #!/usr/bin/env nextflow
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    tranquillyzer-nf: A Nextflow pipeline for processing 
-    long-read single-cell RNA-seq / bulk RNA-seq using Tranquillyzer for 
-    annotation, barcode correction, alignment, and duplicate marking.
-
-    Phase 1: preprocess → read length QC → annotate → align → duplicate marking
-    
-    Later extensions:
-    - feature counts
-    - QC metrics
-
-    GitHub : https://github.com/huishenlab/tranquillyzer.git
-----------------------------------------------------------------------------------------
-*/
-
 nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Import module processes
+    tranquillyzer-nf
+    A Nextflow DSL2 pipeline for processing long-read RNA-seq with Tranquillyzer:
+    preprocess → read-length QC → annotate → align → duplicate marking
+
+    Planned extensions:
+    - feature counts
+    - QC metrics & reporting
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { PREPROCESS          } from './modules/preprocess.nf'
-include { READ_LENGTH_DIST_QC } from './modules/read_length_dist_qc.nf'
-include { ANNOTATE_READS      } from './modules/annotate_reads.nf'
-include { ALIGN               } from './modules/align.nf'
-include { DEDUP               } from './modules/dedup.nf'
+include { TRANQUILLYZER_PIPELINE } from './workflows/tranquillyzer'
+include { PIPELINE_INITIALISATION; PIPELINE_COMPLETION } from './subworkflows/local/utils_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Channels
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-run_ch = Channel
-  .fromPath(params.sample_sheet)
-  .splitCsv(header: true, sep: '\t')
-  .map { row ->
-      tuple(
-        row.sample_id,
-        file(row.raw_dir),
-        file(row.work_dir),
-        file(row.metadata)
-      )
-  }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Workflow definition
+    RUN ENTRYPOINT WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 workflow {
 
-    // 1) Preprocess
-    preprocessed_ch = PREPROCESS(run_ch)
+    main:
 
-    // 2) Read-length distribution QC
-    read_length_dist_ch = READ_LENGTH_DIST_QC(preprocessed_ch)
-
-    // 3) Annotate reads (GPU)
-    annotated_ch = ANNOTATE_READS(
-        preprocessed_ch,
-        params.model_name,
-        params.model_type,
-        params.chunk_size,
-        params.bc_lv_threshold,
-        params.gpu_mem
+    // 1) Initialization / validation / samplesheet parsing
+    PIPELINE_INITIALISATION(
+        params.outdir,
+        params.samplesheet,
+        params.reference,
+        params.seq_order_file
     )
 
-    // 4) Align
-    aligned_ch = ALIGN(
-        annotated_ch,
-        file(params.reference)
+    // 2) Main pipeline
+    TRANQUILLYZER_PIPELINE(
+        PIPELINE_INITIALISATION.out.samplesheet_ch
     )
 
-    // 5) Duplicate marking
-    dedup_ch = DEDUP(
-        aligned_ch
+    // 3) Completion summary (optional)
+    PIPELINE_COMPLETION(
+        params.outdir,
+        TRANQUILLYZER_PIPELINE.out.final_outputs
     )
-
-    // Emit final deduplicated BAMs / output dirs
-    dedup_ch.view { it -> "DEDUP DONE: ${it}" }
 }

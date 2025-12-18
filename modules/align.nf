@@ -16,8 +16,6 @@ process ALIGN {
 
     script:
     """
-    mkdir -p ${work_dir}/aligned_files
-    # Adapt to your actual Tranquillyzer CLI if different
     tranquillyzer align \\
         ${work_dir} \\
         ${reference} \\
