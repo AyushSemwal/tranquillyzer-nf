@@ -4,6 +4,8 @@
 # But NOT these directories (keep them tracked)
 !tests/
 tests/*
+!bin/
+!bin/**
 !tests/samplesheet.txt
 !tests/10x3p/data/
 !tests/10x3p/data/**
