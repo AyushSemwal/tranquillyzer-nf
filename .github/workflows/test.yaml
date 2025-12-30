@@ -39,7 +39,7 @@ jobs:
         run: |
           rm -rf "${NF_TEST_OUTDIR}"
           nextflow run . \
-            -profile singularity_local \
+            -profile docker_local_cpu \
             -c "conf/tests/params_${NF_TEST_CASE}.config"
       
       - name: Set up Python (pytest)
