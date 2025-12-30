@@ -34,18 +34,20 @@ workflow PIPELINE_INITIALISATION {
     log.info " reference     : ${reference}"
     log.info " seq_order_file: ${seq_order_file ?: 'not provided, using default'}"
     log.info "=========================================="
+    
+    def work_dir = file(outdir)
 
     // Parse samplesheet into a channel
     samplesheet_ch = Channel
         .fromPath(samplesheet)
         .splitCsv(header:true, sep:'\t')
         .map { row ->
-            tuple(
-                row.sample_id,
-                file(row.raw_dir),
-                file(row.work_dir),
-                file(row.metadata)
-            )
+            def sample_id = row.sample_id
+            def raw_dir   = file(row.raw_dir)
+            def metadata  = file(row.metadata)
+
+            // force per-sample workdir under outdir
+            tuple( sample_id, raw_dir, work_dir, metadata )
         }
 
     emit:

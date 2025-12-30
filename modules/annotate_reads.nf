@@ -26,7 +26,7 @@ process ANNOTATE_READS {
 
     """
     tranquillyzer annotate-reads \\
-        ${work_dir} \\
+        ${work_dir}/results/${sample_id} \\
         ${metadata} \\
         --model-name ${model_name} \\
         --output-fmt ${output_fmt} \\
@@ -36,6 +36,6 @@ process ANNOTATE_READS {
         --chunk-size ${chunk_size} \\
         --bc-lv-threshold ${bc_lv_threshold} \\
         --threads ${task.cpus} \\
-      > ${work_dir}/annotate_reads.log 2>&1
+      > ${work_dir}/logs/${sample_id}_annotate_reads.log 2>&1
     """
 }

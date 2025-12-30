@@ -12,7 +12,7 @@ process FEATURECOUNTS_MTX {
     path fc_script
 
     output:
-    tuple val(sample_id), path(work_dir), path("${work_dir}/featurecounts", type: 'dir')
+    tuple val(sample_id), path(work_dir), path("${work_dir}/results/${sample_id}/featurecounts", type: 'dir')
 
     script:
     // Optional featureCounts related extra args
@@ -21,15 +21,15 @@ process FEATURECOUNTS_MTX {
                     : ""
 
     """
-    mkdir -p ${work_dir}/featurecounts
+    mkdir -p ${work_dir}/results/${sample_id}/featurecounts
 
     python ${fc_script} \\
       --bam-dir ${bam_dir} \\
       --gtf ${gtf} \\
-      --out-dir ${work_dir}/featurecounts \\
+      --out-dir ${work_dir}/results/${sample_id}/featurecounts \\
       --threads ${task.cpus} \\
       --batch-size ${params.featurecounts_batch_size} \\
       ${extra_opt} \\
-      > ${work_dir}/featurecounts_mtx.log 2>&1
+      > ${work_dir}/logs/${sample_id}_featurecounts_mtx.log 2>&1
     """
 }

@@ -13,10 +13,8 @@ process READ_LENGTH_DIST_QC {
 
     script:
     """
-    mkdir -p ${work_dir}
-
     tranquillyzer readlengthdist \\
-        ${work_dir}
-        > ${work_dir}/read_length_dist_qc.log 2>&1
+        ${work_dir}/results/${sample_id}
+        > ${work_dir}/logs/${sample_id}_read_length_dist_qc.log 2>&1
     """
 }

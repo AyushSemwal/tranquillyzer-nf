@@ -16,13 +16,14 @@ process PREPROCESS {
     def output_flag = params.output_bquals ? '--output-base-qual' : ''
 
     """
-    mkdir -p ${work_dir}
+    mkdir -p ${work_dir}/results/${sample_id}
+    mkdir -p ${work_dir}/logs
 
     tranquillyzer preprocess \\
         ${raw_dir} \\
-        ${work_dir} \\
+        ${work_dir}/results/${sample_id} \\
         ${output_flag} \\
         --threads ${task.cpus} \\
-      > ${work_dir}/preprocess.log 2>&1
+      > ${work_dir}/logs/${sample_id}_preprocess.log 2>&1
     """
 }

@@ -18,19 +18,18 @@ process SPLIT_BAM {
     val    max_open_cb_writers
 
     output:
-    tuple val(sample_id), path(work_dir), path("${work_dir}/aligned_files/split_bams", type: 'dir')
+    tuple val(sample_id), path(work_dir), path("${work_dir}/results/${sample_id}/aligned_files/split_bams", type: 'dir')
 
     script:
     """
-    mkdir -p ${work_dir}/aligned_files/split_bams
-
+    mkdir -p ${work_dir}/results/${sample_id}/aligned_files/split_bams
     # Adapt to your actual Tranquillyzer CLI as needed
     tranquillyzer split-bam \\
         ${dup_marked_bam} \\
-        --out-dir ${work_dir}/aligned_files/split_bams \\
+        --out-dir ${work_dir}/results/${sample_id}/aligned_files/split_bams \\
         --bucket-threads ${bucket_threads} \\
         --merge-threads ${merge_threads} \\
         --max-open-cb-writers ${max_open_cb_writers} \\
-      > ${work_dir}/split_bam.log 2>&1
+      > ${work_dir}/logs/${sample_id}_split_bam.log 2>&1
     """
 }
