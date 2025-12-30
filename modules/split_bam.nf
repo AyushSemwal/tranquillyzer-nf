@@ -18,7 +18,7 @@ process SPLIT_BAM {
     val    max_open_cb_writers
 
     output:
-    tuple val(sample_id), path(work_dir), path("${work_dir}/aligned_files/split_bams")
+    tuple val(sample_id), path(work_dir), path("${work_dir}/aligned_files/split_bams", type: 'dir')
 
     script:
     """

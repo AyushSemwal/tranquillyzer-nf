@@ -12,7 +12,7 @@ process FEATURECOUNTS_MTX {
     path fc_script
 
     output:
-    tuple val(sample_id), path(work_dir), path("${work_dir}/featurecounts")
+    tuple val(sample_id), path(work_dir), path("${work_dir}/featurecounts", type: 'dir')
 
     script:
     // Optional featureCounts related extra args

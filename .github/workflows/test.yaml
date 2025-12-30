@@ -18,7 +18,7 @@ jobs:
 
     env:
       NF_TEST_CASE: ${{ matrix.dataset }}
-      NF_TEST_OUTDIR: tests/results_ci/${{ matrix.dataset }}
+      NF_TEST_OUTDIR: ./tests/${NF_TEST_CASE}/results
 
     steps:
       - uses: actions/checkout@v4
@@ -35,12 +35,12 @@ jobs:
           sudo mv nextflow /usr/local/bin/nextflow
           nextflow -version
 
-      - name: Run Nextflow (docker_local_cpu) for ${{ matrix.dataset }}
+      - name: Run Nextflow (docker_local_cpu) for ${NF_TEST_CASE}
         run: |
           rm -rf "${NF_TEST_OUTDIR}"
           nextflow run . \
-            -profile docker_local_cpu \
-            -c "conf/tests/params_${{ matrix.dataset }}.config"
+            -profile singularity_local \
+            -c "conf/tests/params_${NF_TEST_CASE}.config"
       
       - name: Set up Python (pytest)
         uses: actions/setup-python@v5
