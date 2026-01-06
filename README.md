@@ -93,28 +93,7 @@ nextflow run . \
   -c conf/tests/params_10x3p.config \
   -resume
 ```
-
-### Common usage patterns
-
-#### Local run (GPU, Docker)
-```groovy
-params {
-  executor         = 'local'
-  container_engine = 'docker'
-  enable_gpu       = true
-}
-```
-
-#### HPC/SLURM run with GPU (Singularity/Apptainer)
-```groovy
-params {
-  executor         = 'slurm'
-  container_engine = 'singularity'
-  enable_gpu       = true
-}
-```
-
-## Notes & design principles
+## Notes
 - No profile explosion: execution mode, container engine, and GPU usage are fully param-driven.
 - GPU usage is selective: only processes labeled gpu receive GPU flags.
 - featureCounts is always CPU-only and runs in the Subread container.
