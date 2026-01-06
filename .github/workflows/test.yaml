@@ -39,7 +39,6 @@ jobs:
         run: |
           rm -rf "${NF_TEST_OUTDIR}"
           nextflow run . \
-            -profile docker_local_cpu \
             -c "conf/tests/params_${NF_TEST_CASE}.config"
 
       ## Don't need pytest for now, as tests are run via Nextflow itself
